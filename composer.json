@@ -2,7 +2,7 @@
     "name": "maxime-rainville/silverstripe-server-fingerprint",
     "description": "Silverstripe module that can help you finger print which server is responding to the request.",
     "type": "silverstripe-vendormodule",
-    "license": "BSD-3",
+    "license": "BSD-3-Clause",
     "autoload": {
         "psr-4": {
             "MaximeRainville\\SilverstripeServerFingerprint\\": "src/"
