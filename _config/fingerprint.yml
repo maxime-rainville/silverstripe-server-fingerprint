@@ -1,0 +1,12 @@
+---
+Name: serverfingerprint
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Control\Director:
+    properties:
+      Middlewares:
+        ServerFingerprintMiddleware: '%$MaximeRainville\SilverstripeServerFingerprint\Middleware'
+  MaximeRainville\SilverstripeServerFingerprint\Middleware:
+    class: MaximeRainville\SilverstripeServerFingerprint\Middleware
+  MaximeRainville\SilverstripeServerFingerprint\Service:
+    class: MaximeRainville\SilverstripeServerFingerprint\MachineIDService
