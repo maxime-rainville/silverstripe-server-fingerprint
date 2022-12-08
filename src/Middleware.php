@@ -2,9 +2,12 @@
 
 namespace MaximeRainville\SilverstripeServerFingerprint;
 
+use Psr\Log\LoggerInterface;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\Middleware\HTTPMiddleware;
 use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\ORM\Connect\DatabaseException;
 
 class Middleware implements HTTPMiddleware
 {
@@ -18,16 +21,22 @@ class Middleware implements HTTPMiddleware
      */
     public function process(HTTPRequest $request, callable $delegate)
     {
-        if (Server::isReady()) {
 
-            $server = Server::singleton()->current();
+        try {
+            if (Server::isReady()) {
 
-            /** @var HTTPResponse $response */
-            $response = $delegate($request);
-            $response->addHeader('server-fingerprint', $server->getHeader());
+                $server = Server::singleton()->current();
 
-            return $response;
+                /** @var HTTPResponse $response */
+                $response = $delegate($request);
+                $response->addHeader('server-fingerprint', $server->getHeader());
+
+                return $response;
+            }
+        } catch (DatabaseException $ex) {
+            Injector::inst()->get(LoggerInterface::class)->warning('Could not finger print server because of Database exception. Database probably was not ready.');
         }
+
 
         return $delegate($request);
     }
