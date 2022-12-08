@@ -2,6 +2,7 @@
 
 namespace MaximeRainville\SilverstripeServerFingerprint;
 
+use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CompositeValidator;
 use SilverStripe\ORM\DataObject;
@@ -79,7 +80,8 @@ class Server extends DataObject
         $schema = DataObject::getSchema();
 
         // Require table
-        if (!$schema->classHasTable(self::class)) {
+        $table = $schema->tableName(self::class);
+        if (!ClassInfo::hasTable($table)) {
             return false;
         }
 
