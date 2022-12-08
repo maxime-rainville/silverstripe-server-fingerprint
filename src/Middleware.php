@@ -21,7 +21,6 @@ class Middleware implements HTTPMiddleware
      */
     public function process(HTTPRequest $request, callable $delegate)
     {
-
         try {
             if (Server::isReady()) {
 
@@ -36,7 +35,6 @@ class Middleware implements HTTPMiddleware
         } catch (DatabaseException $ex) {
             Injector::inst()->get(LoggerInterface::class)->warning('Could not finger print server because of Database exception. Database probably was not ready.');
         }
-
 
         return $delegate($request);
     }
