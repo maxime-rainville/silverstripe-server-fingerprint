@@ -72,6 +72,10 @@ class Server extends DataObject
 
     public static function isReady(): bool
     {
+        if (!DB::get_conn()->isActive()) {
+            return false;
+        }
+
         $schema = DataObject::getSchema();
 
         // Require table
