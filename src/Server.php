@@ -35,7 +35,8 @@ class Server extends DataObject
         'ID',
         'Nickname',
         'Fingerprint',
-        'LastAccess'
+        'LastAccess',
+        'IsCurrent'
     ];
 
     public function current(): self
@@ -59,6 +60,11 @@ class Server extends DataObject
 
         self::$current = $server;
         return $server;
+    }
+
+    public function IsCurrent(): bool
+    {
+        return $this->current()->Fingerprint === $this->Fingerprint;
     }
 
     public function byFingerPrint(string $fingerprint): ?self
