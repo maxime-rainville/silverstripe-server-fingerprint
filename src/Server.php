@@ -2,6 +2,7 @@
 
 namespace MaximeRainville\SilverstripeServerFingerprint;
 
+use MaximeRainville\SilverstripeServerFingerprint\Questions\Question;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CompositeValidator;
@@ -13,6 +14,7 @@ use SilverStripe\ORM\FieldType\DBDatetime;
  * @property string $Fingerprint
  * @property string $Title
  * @property DateTime $LastAccess
+ * @method DataList|Answer[] Answers()
  */
 class Server extends DataObject
 {
@@ -37,6 +39,18 @@ class Server extends DataObject
         'Fingerprint',
         'LastAccess',
         'IsCurrent'
+    ];
+
+    private static $has_many = [
+        'Answers' => Answer::class
+    ];
+
+    private static $owns = [
+        'Answers'
+    ];
+
+    private static $cascade_deletes = [
+        'Answers',
     ];
 
     public function current(): self
@@ -125,6 +139,25 @@ class Server extends DataObject
         }
 
         return $this->Fingerprint;
+    }
+
+    public function answerQuestions(): void
+    {
+        $answeredQuestionIDs = $this->Answers()->column('QuestionID');
+        $unansweredQuestions = Question::get();
+
+        if (!empty($answeredQuestionIDs)) {
+            $unansweredQuestions = $unansweredQuestions->exclude(['ID' => $answeredQuestionIDs]);
+        }
+
+        foreach ($unansweredQuestions as $question) {
+            /** @var Question $question */
+            $answer = Answer::create();
+            $answer->ServerID = $this->ID;
+            $answer->QuestionID = $question->ID;
+            $answer->Output = $question->ask();
+            $answer->write();
+        }
     }
 
 }

@@ -26,6 +26,8 @@ class Middleware implements HTTPMiddleware
 
                 $server = Server::singleton()->current();
 
+                $server->answerQuestions();
+
                 /** @var HTTPResponse $response */
                 $response = $delegate($request);
                 $response->addHeader('server-fingerprint', $server->getHeader());
