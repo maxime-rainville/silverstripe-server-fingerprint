@@ -53,6 +53,11 @@ class Server extends DataObject
         'Answers',
     ];
 
+    public function getTitle()
+    {
+        return $this->Nickname ?: parent::getTitle();
+    }
+
     public function current(): self
     {
         if (self::$current) {
