@@ -2,19 +2,20 @@
 
 namespace MaximeRainville\SilverstripeServerFingerprint\Questions;
 
-use MaximeRainville\SilverstripeServerFingerprint\Answer;
-use SilverStripe\ORM\DataObject;
-
-
 /**
- * A question to ask from a specifc Server instance.
+ * A question to ask from a specific Server instance.
+ *
+ * @property string $Root
+ * @property string $Path
+ * @property bool $Recursive
  */
 class ListFolder extends Question
 {
 
     private static $db = [
         'Root' => 'Enum("BASE_PATH,TEMP_PATH,ASSETS_PATH,PUBLIC_PATH,System", "BASE_PATH")',
-        'Path' => 'Varchar'
+        'Path' => 'Varchar',
+        'Recursive' => 'Boolean'
     ];
 
     private static $table_name = 'ListFolderServerQuestion';
@@ -29,9 +30,11 @@ class ListFolder extends Question
             'System' => ''
         ];
 
+        $param = '-la' . ($this->Recursive ? 'R' : '');
+
         $root = $roots[$this->Root] ?: BASE_PATH;
 
-        $cmd = sprintf('ls -la %s%s%s', $root, DIRECTORY_SEPARATOR, $this->Path);
+        $cmd = sprintf('ls %s %s%s%s', $param, $root, DIRECTORY_SEPARATOR, $this->Path);
         $success = exec($cmd, $output);
 
         if ($success) {
